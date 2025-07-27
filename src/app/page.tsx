@@ -1,103 +1,189 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import { AppProvider, useApp } from '@/context/AppContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { TodoList } from '@/components/TodoList';
+import { Notes } from '@/components/Notes';
+import { PiPControls } from '@/components/PiPControls';
+import { Bell, Settings, Download, StickyNote, Sun, Moon } from 'lucide-react';
+
+function TodoApp() {
+  const { state } = useApp();
+  const { theme, toggleTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState<'todos' | 'notes'>('todos');
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+
+  useEffect(() => {
+    // Check if app can be installed
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setShowInstallPrompt(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    // This would be handled by the browser's install prompt
+    setShowInstallPrompt(false);
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+      {/* Header */}
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm border-b border-amber-200 dark:border-gray-600">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 dark:from-blue-500 dark:to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <StickyNote className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PiP Todo Assistant</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Your floating sticky notes companion</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all interactive-button"
+                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+              >
+                {theme === 'light' ? (
+                  <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                ) : (
+                  <Sun className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                )}
+              </button>
+              <PiPControls />
+              {showInstallPrompt && (
+                <button
+                  onClick={handleInstall}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all interactive-button shadow-md"
+                >
+                  <Download className="w-4 h-4" />
+                  Install App
+                </button>
+              )}
+            </div>
+          </div>
         </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-gray-600 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                <Bell className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                  {state.todos.filter(t => !t.completed).length}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">Active Tasks</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-gray-600 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                <StickyNote className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                  {state.todos.filter(t => t.completed).length}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">Completed</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-gray-600 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                <StickyNote className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                  {state.notes.length}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">Notes</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-gray-600 mb-8">
+          <div className="border-b border-amber-200 dark:border-gray-600">
+            <nav className="flex">
+              <button
+                onClick={() => setActiveTab('todos')}
+                className={`px-8 py-4 text-sm font-medium transition-all interactive-button rounded-t-xl ${
+                  activeTab === 'todos'
+                    ? 'bg-amber-500 dark:bg-blue-600 text-white shadow-md'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Bell className="w-4 h-4" />
+                  Tasks
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab('notes')}
+                className={`px-8 py-4 text-sm font-medium transition-all interactive-button rounded-t-xl ${
+                  activeTab === 'notes'
+                    ? 'bg-amber-500 dark:bg-blue-600 text-white shadow-md'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <StickyNote className="w-4 h-4" />
+                  Notes
+                </div>
+              </button>
+            </nav>
+          </div>
+          
+          <div className="p-8">
+            {activeTab === 'todos' ? <TodoList /> : <Notes />}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <footer className="text-center py-8">
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-gray-600 p-6">
+            <p className="text-gray-700 dark:text-gray-300 font-medium">PiP Todo Assistant - Stay productive, stay floating! 🚀</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Use Picture-in-Picture mode to keep this app visible while working on other tasks.
+            </p>
+          </div>
+        </footer>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <ThemeProvider>
+      <AppProvider>
+        <TodoApp />
+      </AppProvider>
+    </ThemeProvider>
   );
 }
