@@ -12,13 +12,9 @@ A modern, feature-rich todo application with Picture-in-Picture (PiP) mode, buil
 - [Why I Created This](#-why-i-created-this)
 - [Purpose & Features](#-purpose--features)
 - [Tech Stack](#-tech-stack)
-- [What I Learned](#-what-i-learned)
 - [Local Setup](#-local-setup)
 - [Key Features](#-key-features)
-- [Architecture](#-architecture)
 - [Performance Optimizations](#-performance-optimizations)
-- [Interview Questions](#-interview-questions)
-- [Future Enhancements](#-future-enhancements)
 
 ## 🎯 Why I Created This
 
@@ -108,44 +104,6 @@ The PiP Todo Assistant is designed to be your **floating productivity companion*
 - **TypeScript**: Static type checking
 - **Hot Reload**: Fast development experience
 - **Build Optimization**: Production-ready builds
-
-## 🎓 What I Learned
-
-### **Advanced React Patterns**
-- **Custom Hooks**: Created reusable hooks for PiP and timer functionality
-- **Context + useReducer**: Complex state management patterns
-- **Performance Optimization**: useCallback, useMemo, and proper re-rendering
-- **Component Composition**: Building modular, reusable components
-
-### **PWA Development**
-- **Service Worker Lifecycle**: Understanding install, activate, and fetch events
-- **Offline-First Design**: Building apps that work without internet
-- **App Manifest**: Configuring PWA metadata and installation
-- **Cross-Window Communication**: Real-time state synchronization
-
-### **Modern CSS Techniques**
-- **CSS Custom Properties**: Dynamic theming with CSS variables
-- **Advanced Animations**: Smooth transitions and micro-interactions
-- **Responsive Design**: Mobile-first approach with breakpoints
-- **Glass Morphism**: Modern UI design patterns
-
-### **TypeScript Best Practices**
-- **Type Safety**: Comprehensive type definitions
-- **Interface Design**: Well-structured data contracts
-- **Generic Types**: Reusable type patterns
-- **Error Handling**: Type-safe error management
-
-### **Performance Optimization**
-- **Code Splitting**: Lazy loading and dynamic imports
-- **Bundle Optimization**: Minimizing bundle size
-- **Caching Strategies**: Service worker caching patterns
-- **Memory Management**: Proper cleanup and garbage collection
-
-### **Real-World Problem Solving**
-- **Cursor Position Management**: Complex text editor functionality
-- **State Synchronization**: Multi-window data consistency
-- **User Experience Design**: Intuitive and accessible interfaces
-- **Error Handling**: Graceful degradation and user feedback
 
 ## 🚀 Local Setup
 
@@ -243,38 +201,6 @@ const broadcastState = (newState) => {
 };
 ```
 
-## 🏗 Architecture
-
-### **Component Structure**
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx         # Root layout with PWA setup
-│   ├── page.tsx           # Main application page
-│   └── globals.css        # Global styles and themes
-├── components/            # Reusable components
-│   ├── TodoList.tsx       # Todo management
-│   ├── TodoItem.tsx       # Individual todo items
-│   ├── Notes.tsx          # Note management
-│   ├── RichTextEditor.tsx # Advanced text editor
-│   └── PiPControls.tsx    # PiP mode controls
-├── context/               # State management
-│   ├── AppContext.tsx     # Main app state
-│   └── ThemeContext.tsx   # Theme management
-├── hooks/                 # Custom hooks
-│   ├── usePiP.ts          # PiP functionality
-│   └── useTimer.ts        # Timer management
-└── types/                 # TypeScript definitions
-    └── index.ts           # Type interfaces
-```
-
-### **Data Flow**
-1. **User Actions** → Components
-2. **Components** → Context (useReducer)
-3. **Context** → Local Storage + Service Worker
-4. **Service Worker** → Other PWA instances
-5. **State Updates** → UI Re-render
-
 ## ⚡ Performance Optimizations
 
 ### **Code Splitting**
@@ -296,84 +222,6 @@ src/
 - Tree shaking for unused code
 - Minification and compression
 - Optimized images and assets
-
-## 💼 Interview Questions
-
-### **Technical Questions**
-
-#### **React & Next.js**
-1. **Q**: How did you implement the Picture-in-Picture functionality?
-   **A**: Created a custom hook that uses the modern `documentPictureInPicture` API with fallback to video PiP for older browsers.
-
-2. **Q**: Explain your state management architecture.
-   **A**: Used React Context + useReducer for complex state, with custom hooks for specific functionality like timers and PiP mode.
-
-3. **Q**: How did you handle cursor position in the rich text editor?
-   **A**: Implemented cursor preservation using Range API, saving and restoring selection during content updates.
-
-#### **PWA & Performance**
-4. **Q**: How does your PWA work offline?
-   **A**: Service worker caches essential resources and handles offline actions with background sync when connection returns.
-
-5. **Q**: How did you optimize bundle size?
-   **A**: Used Next.js built-in optimizations, code splitting, tree shaking, and minimized dependencies.
-
-#### **TypeScript & Architecture**
-6. **Q**: How did you ensure type safety across the application?
-   **A**: Comprehensive TypeScript interfaces, generic types, and strict type checking throughout.
-
-7. **Q**: Explain your component architecture.
-   **A**: Modular, reusable components with clear separation of concerns, custom hooks for logic, and context for state.
-
-### **Problem-Solving Questions**
-
-8. **Q**: How would you scale this app for millions of users?
-   **A**: Implement backend APIs, database storage, user authentication, and cloud deployment with CDN.
-
-9. **Q**: How did you handle cross-browser compatibility?
-   **A**: Progressive enhancement, feature detection, and fallbacks for older browsers.
-
-10. **Q**: What challenges did you face and how did you solve them?
-    **A**: Cursor jumping in rich text editor (solved with Range API), PWA state sync (solved with service worker messaging), and theme switching (solved with CSS custom properties).
-
-### **System Design Questions**
-
-11. **Q**: Design a real-time collaboration feature for this app.
-    **A**: WebSocket connections, operational transformation, conflict resolution, and real-time state synchronization.
-
-12. **Q**: How would you implement data persistence and sync?
-    **A**: IndexedDB for local storage, REST APIs for server sync, and conflict resolution strategies.
-
-## 🔮 Future Enhancements
-
-### **Short Term**
-- [ ] **Real-time Collaboration**: Multi-user editing
-- [ ] **Cloud Sync**: Backend integration with user accounts
-- [ ] **Advanced Timers**: Pomodoro technique, recurring timers
-- [ ] **Categories & Tags**: Better organization system
-- [ ] **Export/Import**: Data portability features
-
-### **Medium Term**
-- [ ] **Mobile App**: React Native or Capacitor
-- [ ] **Voice Commands**: Speech-to-text integration
-- [ ] **AI Integration**: Smart task suggestions
-- [ ] **Calendar Integration**: Sync with external calendars
-- [ ] **Advanced Analytics**: Productivity insights
-
-### **Long Term**
-- [ ] **Team Features**: Shared workspaces and collaboration
-- [ ] **API Platform**: Third-party integrations
-- [ ] **Enterprise Features**: SSO, advanced permissions
-- [ ] **AI Assistant**: Intelligent task management
-- [ ] **Cross-Platform Sync**: Native apps for all platforms
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## 📄 License
 
